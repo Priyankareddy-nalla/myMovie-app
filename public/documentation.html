@@ -6,14 +6,185 @@
     <title> myMovie-app</title>
 </head>
 
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        text-align: center;
+    }
+</style>
+
 <body>
-    <h1>About App</h1>
+    <h1>Documentation about myMovie-app</h1>
 
     <p>It is a server-side based web application.This application will provide users with access
         to information about different movies, directors.
         Users will be able to sign up, update their personal information,
         and create a list of their favorite movies.
         This app interacts with a database that stores data about different movies.</p>
+
+    <table style="width:100%">
+        <tr>
+            <th>Request</th>
+            <th>URL</th>
+            <th>HTTP Method</th>
+            <th>Request body data
+                format</th>
+            <th>Response body data
+                format</th>
+        </tr>
+        <tr>
+            <td>Get a list of all Movies</td>
+            <td>/movies</td>
+            <td>GET</td>
+            <td>None</td>
+            <td>A JSON object holding data about all the movies</td>
+        </tr>
+        <tr>
+            <td>Get movie details</td>
+            <td>/movies/[title]</td>
+            <td>GET</td>
+            <td>None</td>
+            <td>A JSON object holding data about particular movie</td>
+        </tr>
+        <tr>
+            <td>Get movie genre details</td>
+            <td>/movies/[genre]/[genreName]</td>
+            <td>GET</td>
+            <td>None</td>
+            <td>A JSON object holding data about movie genre</td>
+        </tr>
+        <tr>
+            <td>Get Director details</td>
+            <td>/movies/[directors]/[directorName]</td>
+            <td>GET</td>
+            <td>None</td>
+            <td>A JSON object holding data about director details</td>
+        </tr>
+
+        <tr>
+            <td>Get a list of users </td>
+            <td>/usersList</td>
+            <td>GET</td>
+            <td>None</td>
+            <td>A JSON object holding data about all users</td>
+        </tr>
+
+        <tr>
+            <td>Add a movie </td>
+            <td>/users</td>
+            <td>POST</td>
+            <td>A JSON object holding
+                data about the user to
+                add, structured like:
+                {
+                name : "Priyanka",
+                favoriteMovies :[]
+                }</td>
+            <td>A JSON object holding data
+                about the user that was
+                added, including an ID:
+                {
+                name : "Priyanka",
+                favoriteMovies :[],
+                id: numbercreated
+                }
+            </td>
+        </tr>
+
+        <tr>
+            <td>Update user details</td>
+            <td>/users/[id]</td>
+            <td>PUT</td>
+            <td>A JSON object holding
+                data about the user to
+                update, structured like:
+                {
+                id:1,
+                name : "Priyanka",
+                favoriteMovies :[]
+                }</td>
+            <td>A JSON object holding data
+                about the user that was
+                updated with detils:
+                {
+                id:1,
+                name : "Priyanka Nalla",
+                favoriteMovies :[]
+                }
+            </td>
+        </tr>
+
+        <tr>
+            <td>Add movie to favoriteMovies list</td>
+            <td>/users/[id]/[movieTitle]</td>
+            <td>POST</td>
+            <td>A JSON object holding
+                data about the user to
+                add favorite movie, structured like:
+                {
+                id:3,
+                name : "Arjun",
+                favoriteMovies :[]
+                }</td>
+            <td>A JSON object holding data
+                about the user that was
+                added to favoriteMovies list :
+                {
+                id:3,
+                name : "Arjun",
+                favoriteMovies :[ Dangal]
+                }
+            </td>
+        </tr>
+
+        <tr>
+            <td>Delete movie from favoriteMovies list</td>
+            <td>/users/[id]/[movieTitle]</td>
+            <td>DELETE</td>
+            <td>A JSON object holding
+                data about the user
+                favoritemMovie list, structured like:
+                {
+                id:3,
+                name : "Arjun",
+                favoriteMovies :[Dangal]
+                }</td>
+            <td>A JSON object holding data
+                about the user that was movie
+                deleted from favoriteMovies list :
+                {
+                id:3,
+                name : "Arjun",
+                favoriteMovies :[]
+                }
+            </td>
+        </tr>
+
+        <tr>
+            <td>Delete user</td>
+            <td>/users/[id]</td>
+            <td>DELETE</td>
+            <td>A JSON object holding
+                data about the user, structured like:
+                {
+                id:3,
+                name : "Arjun",
+                favoriteMovies :[Dangal]
+                }</td>
+            <td>A JSON object holding data
+                about the userlist after removing/delete user
+                {
+                text message user 3 removed from user array
+                }
+            </td>
+        </tr>
+
+    </table>
+
+
 </body>
 
 
