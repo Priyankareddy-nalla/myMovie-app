@@ -1,12 +1,26 @@
+
+
 const express = require('express'),
   bodyParser = require('body-parser'),
   uuid = require('uuid'),
   morgan = require('morgan'),//import morgan module
   fs = require('fs'), // import built in node modules fs and path 
   path = require('path');
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+
+
+const Movies = Models.Movie;
+const Users = Models.User;
+
+
+mongoose.connect('mongodb://localhost:27017/movies', { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(bodyParser.json());
 
@@ -14,47 +28,7 @@ app.use(bodyParser.json());
 app.use(express.static('public'));//routing to static files
 
 
-let users = [{
-  id: 1,
-  name: 'priyanka',
-  favoriteMovies: []
-},
-{
-  id: 2,
-  name: 'Nithya',
-  favoriteMovies: ["Dangal"]
 
-}
-];
-let movies = [
-  {
-    Title: 'Taare Zameen Par',
-    Descrption: 'Ishaan is criticised by his parents for his poor academic performance and is sent away to a boarding school. Ram, an art teacher, however, realises he has dyslexia and helps him uncover his potential.',
-    Genre: {
-      Name: 'Chidrens film',
-      Descrption: "It explores the life and imagination of Ishaan (Safary), an artistically gifted 9-year-old boy whose poor academic performance leads his parents to send him to a boarding school, where a new art teacher Nikumbh (Khan) suspects that he is dyslexic and helps him to overcome his reading disorder."
-    },
-    Director: {
-      Name: 'Aamir Khan',
-      Bio: 'Mohammed Aamir Hussain Khan is an Indian actor who works in Hindi films. Referred to in the media as "Mr. Perfectionist", through his career spanning over 30 years, Khan has established himself as one of the most notable actors of Indian cinema',
-      Born: 1965
-    }
-  },
-  {
-    Title: 'Dangal',
-    Descrption: 'Mahavir Singh Phogat, a former wrestler, decides to fulfil his dream of winning a gold medal for his country by training his daughters for the Commonwealth Games despite the existing social stigmas.',
-    Genre: {
-      Name: 'Sports',
-      Description: 'The film stars Khan as Mahavir Singh Phogat, a pehlwani amateur wrestler who trains his daughters Geeta Phogat and Babita Kumari to become Indias first world-class female wrestlers.',
-    },
-    Director: {
-      Name: 'Nitesh Tiwari',
-      Bio: 'Nitesh Tiwari is an Indian film director, screenwriter, and lyricist known for his works in Bollywood. He debuted as a co-director in Chillar Party which won the National Film Award for Best Childrens Film. He also directed the supernatural political drama Bhoothnath Returns.',
-      Born: 1972
-    }
-
-  }
-];
 // create a write stream (in append mode)
 // a ‘log.txt’ file is created in root directory
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), { flags: 'a' })
@@ -70,134 +44,183 @@ app.get('/documentation', (req, res) => {
   res.sendFile('public/documentation.html', { root: __dirname });
 });
 
-//CREATE new user
-app.post('/users', (req, res) => {
-  const newUser = req.body;
-  if (newUser.name) {
-    newUser.id = uuid.v4();
-    users.push(newUser);
-    res.status(201).json(newUser);
-  } else {
-    res.status(400).send('user needs name')
-  }
-})
+//CREATE new user in mongoose
+app.post('/users', async (req, res) => {
+  await Users.findOne({ Username: req.body.Username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + 'already exists');
+      } else {
+        Users
+          .create({
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          .then((user) => { res.status(201).json(user) })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send('Error: ' + error);
+          })
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
 
-//UPDATE update user details
-app.put('/users/:id', (req, res) => {
-  const { id } = req.params;
-  const updateUser = req.body;
+// Get all users mongoose
+app.get('/users', async (req, res) => {
+  await Users.find()
+    .then((users) => {
+      res.status(201).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
-  let user = users.find(user => user.id == id);
-  if (user) {
-    user.name = updateUser.name;
-    res.status(200).json(user);
-  } else {
-    res.status(400).json('no such user');
-  }
-})
+// Get a user by username mongoose
+app.get('/users/:Username', async (req, res) => {
+  await Users.findOne({ Username: req.params.Username })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+//update user info  using mongoose
+app.put('/users/:Username', async (req, res) => {
+  await Users.findOneAndUpdate({ Username: req.params.Username }, {
+    $set:
+    {
+      Username: req.body.Username,
+      Password: req.body.Password,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday
+    }
+  },
+    { new: true }) // This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    })
+
+});
 
 
-//CREATE adding  movie to favorite movie  list
-app.post('/users/:id/:movieTitle', (req, res) => {
-  const { id, movieTitle } = req.params;
-
-  let user = users.find(user => user.id == id);
-  if (user) {
-    user.favoriteMovies.push(movieTitle);
-    res.status(200).json(`${movieTitle} has been added to user ${id} array`);
-  } else {
-    res.status(400).json('no movie added to user');
-  }
-})
+// Add a movie to a user's list of favorites using mongoose
+app.post('/users/:Username/movies/:MovieID', async (req, res) => {
+  await Users.findOneAndUpdate({ Username: req.params.Username }, {
+    $push: { FavoriteMovies: req.params.MovieID }
+  },
+    { new: true }) // This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
 
 //DELETE delete movie from favoriteMovie list
-app.delete('/users/:id/:movieTitle', (req, res) => {
-  const { id, movieTitle } = req.params;
+app.delete('/users/:Username/movies/:MovieID', async (req, res) => {
+  await Users.findOneAndUpdate({ Username: req.params.Username }, {
+    $pull: { FavoriteMovies: req.params.MovieID }
+  },
+    { new: true }) // This line makes sure that the updated document is returned
+    .then((updatedUser) => {
+      res.json(updatedUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
-  let user = users.find(user => user.id == id);
-  if (user) {
-    user.favoriteMovies = user.favoriteMovies.filter(title => title !== movieTitle);
-    res.status(200).json(`${movieTitle} has been removed to user ${id} array`);
-  } else {
-    res.status(400).json('no movie removed from user');
-  }
-})
+// Delete a user by username  in mongoose
+app.delete('/users/:Username', (req, res) => {
+  Users.findOneAndDelete({ Username: req.params.Username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
+      } else {
+        res.status(200).send(req.params.Username + ' was deleted.');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
-
-//DELETE user 
-app.delete('/users/:id', (req, res) => {
-  const { id } = req.params;
-
-  let user = users.find(user => user.id == id);
-
-  if (user) {
-    users = users.filter(user => user.id != id);
-    // res.json(users);
-    res.status(200).json(`user ${id} has been deleted`);
-  } else {
-    res.status(400).json('no such user');
-  }
-})
-
-
-//READ users  just checkup
-app.get('/usersList', (req, res) => {
-  res.status(200).json(users);
-})
 
 
 //READ  get a list of all movies
-app.get('/movies', (req, res) => {
-  res.status(200).json(movies);
+app.get('/movies', async (req, res) => {
+  await Movies.find()
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 
 //READ get moviedetils searching  title
-app.get('/movies/:title', (req, res) => {
-  const { title } = req.params;
-  const movie = movies.find(movie => movie.Title === title);
-
-  if (movie) {
-    res.status(200).json(movie);
-  } else {
-    res.status(400).send('no such movie');
-  }
+app.get('/movies/:Title', (req, res) => {
+  Movies.findOne({ Title: req.params.Title })
+    .then((movie) => {
+      res.status(200).json(movie);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).send('Error:' + error);
+    });
 });
 
 
-//READ get movie genre 
-app.get('/movies/genre/:genreName', (req, res) => {
-  const { genreName } = req.params;
-  const genre = movies.find(movie => movie.Genre.Name === genreName);
-
-  if (genre) {
-    res.status(200).json(genre);
-  } else {
-    res.status(400).send('no such genre');
-  }
+//READ get movie genre  mdb
+app.get('/movies/genres/:genreName', async (req, res) => {
+  await Movies.find({ "Genre.Name": req.params.genreName })
+    .then((movies) => {
+      res.json(movies);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send('Error:' + err);
+    });
 });
+
+
 
 //READ get director details
-app.get('/movies/directors/:directorName', (req, res) => {
-  const { directorName } = req.params;
-  const director = movies.find(movie => movie.Director.Name === directorName).Director;
-
-  if (director) {
-    res.status(200).json(director);
-  } else {
-    res.status(400).send(' no such director');
-  }
+app.get('/movies/directors/:directorName', async (req, res) => {
+  await Movies.find({ "Director.Name": req.params.directorName })
+    .then((movies) => {
+      res.json(movies);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).send(error);
+    });
 });
-
 
 app.listen(8080, () => {
   console.log('myMovie app is listening on port 8080.');
 });
 
 
-//error handler 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something went worng!');
-});

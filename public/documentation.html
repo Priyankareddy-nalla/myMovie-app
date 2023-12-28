@@ -35,6 +35,19 @@
             <th>Response body data
                 format</th>
         </tr>
+
+        <tr>
+            <td>Add user</td>
+            <td>/users</td>
+            <td>POST</td>
+            <td>Enter Username:
+                Password:
+                Email:
+                Birthday:
+            </td>
+            <td>A JSON object craeted user with given details.If exsisted then already exsisted message displayed</td>
+        </tr>
+
         <tr>
             <td>Get a list of all Movies</td>
             <td>/movies</td>
@@ -44,7 +57,7 @@
         </tr>
         <tr>
             <td>Get movie details</td>
-            <td>/movies/[title]</td>
+            <td>/movies/[Title]</td>
             <td>GET</td>
             <td>None</td>
             <td>A JSON object holding data about particular movie</td>
@@ -66,37 +79,24 @@
 
         <tr>
             <td>Get a list of users </td>
-            <td>/usersList</td>
+            <td>/users</td>
             <td>GET</td>
             <td>None</td>
             <td>A JSON object holding data about all users</td>
         </tr>
 
         <tr>
-            <td>Add a movie </td>
-            <td>/users</td>
-            <td>POST</td>
-            <td>A JSON object holding
-                data about the user to
-                add, structured like:
-                {
-                name : "Priyanka",
-                favoriteMovies :[]
-                }</td>
-            <td>A JSON object holding data
-                about the user that was
-                added, including an ID:
-                {
-                name : "Priyanka",
-                favoriteMovies :[],
-                id: numbercreated
-                }
-            </td>
+            <td>Get user by Username </td>
+            <td>/users/[Username]</td>
+            <td>GET</td>
+            <td>None</td>
+            <td>A JSON object holding data about particular user</td>
         </tr>
+
 
         <tr>
             <td>Update user details</td>
-            <td>/users/[id]</td>
+            <td>/users/[Username]</td>
             <td>PUT</td>
             <td>A JSON object holding
                 data about the user to
@@ -119,7 +119,7 @@
 
         <tr>
             <td>Add movie to favoriteMovies list</td>
-            <td>/users/[id]/[movieTitle]</td>
+            <td>/users/[Username]/movies/[MovieID]</td>
             <td>POST</td>
             <td>A JSON object holding
                 data about the user to
@@ -135,14 +135,14 @@
                 {
                 id:3,
                 name : "Arjun",
-                favoriteMovies :[ Dangal]
+                favoriteMovies :[ MovieID]
                 }
             </td>
         </tr>
 
         <tr>
             <td>Delete movie from favoriteMovies list</td>
-            <td>/users/[id]/[movieTitle]</td>
+            <td>/users/[Username]/movies/[MovieID]</td>
             <td>DELETE</td>
             <td>A JSON object holding
                 data about the user
@@ -150,7 +150,7 @@
                 {
                 id:3,
                 name : "Arjun",
-                favoriteMovies :[Dangal]
+                favoriteMovies :[MovieID]
                 }</td>
             <td>A JSON object holding data
                 about the user that was movie
@@ -165,19 +165,19 @@
 
         <tr>
             <td>Delete user</td>
-            <td>/users/[id]</td>
+            <td>/users/Username</td>
             <td>DELETE</td>
             <td>A JSON object holding
                 data about the user, structured like:
                 {
                 id:3,
                 name : "Arjun",
-                favoriteMovies :[Dangal]
+                favoriteMovies :[MovieID]
                 }</td>
             <td>A JSON object holding data
                 about the userlist after removing/delete user
                 {
-                text message user 3 removed from user array
+                text message user was deleted/if user was not exsisted message displayed like user was not found
                 }
             </td>
         </tr>
