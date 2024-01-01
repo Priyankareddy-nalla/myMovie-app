@@ -10,7 +10,7 @@
     table,
     th,
     td {
-        border: 1px solid black;
+        border: 1px solid blue;
         border-collapse: collapse;
         text-align: center;
     }
@@ -40,12 +40,25 @@
             <td>Add user</td>
             <td>/users</td>
             <td>POST</td>
-            <td>Enter Username:
-                Password:
-                Email:
-                Birthday:
+            <td>
+                {<br>
+                "Username": "User6",<br>
+                "Password": "pwd6",<br>
+                "Email": "User6@gmail.com",<br>
+                "Birthday": "1991-06-21"<br>
+                }
             </td>
-            <td>A JSON object craeted user with given details.If exsisted then already exsisted message displayed</td>
+            <td>A JSON object craeted user with given details.
+                {<br>
+                "Username": "User6",<br>
+                "Password": "pwd6",<br>
+                "Email": "User6@gmail.com",<br>
+                "Birthday": "1991-06-21T00:00:00.000Z",<br>
+                "FavoriteMovies": [],<br>
+                "_id": "65931739173b8df040430de4",<br>
+                "__v": 0
+                }
+                If exsisted then already exsisted message displayed</td>
         </tr>
 
         <tr>
@@ -100,19 +113,25 @@
             <td>PUT</td>
             <td>A JSON object holding
                 data about the user to
-                update, structured like:
-                {
-                id:1,
-                name : "Priyanka",
-                favoriteMovies :[]
+                update, structured like:<br>
+                {<br>
+                _id:658c830a307dc3de7e1d47d2,<br>
+                Username : "user1",<br>
+                Password: "pwd1",<br>
+                Email: "usertest@mail.com",<br>
+                Birthday: "1990-03-24"<br>
+                favoriteMovies :[658b3442c0a6d242cf1e208f]<br>
                 }</td>
             <td>A JSON object holding data
                 about the user that was
-                updated with detils:
+                updated with detils:<br>
                 {
-                id:1,
-                name : "Priyanka Nalla",
-                favoriteMovies :[]
+                _id:658c830a307dc3de7e1d47d2,<br>
+                name : "user1 test",<br>
+                Password: "pwd1",<br>
+                Email: "usertest@mail.com",<br>
+                Birthday: "1990-03-24"<br>
+                favoriteMovies :[658b3442c0a6d242cf1e208f]<br>
                 }
             </td>
         </tr>
@@ -124,18 +143,28 @@
             <td>A JSON object holding
                 data about the user to
                 add favorite movie, structured like:
-                {
-                id:3,
-                name : "Arjun",
-                favoriteMovies :[]
+                {<br>
+                "_id": "65931739173b8df040430de4",<br>
+                "Username": "User6",<br>
+                "Password": "pwd6",<br>
+                "Email": "User6@gmail.com",<br>
+                "Birthday": "1991-06-21T00:00:00.000Z",<br>
+                "FavoriteMovies": [],<br>
+                "__v": 0
                 }</td>
             <td>A JSON object holding data
                 about the user that was
                 added to favoriteMovies list :
-                {
-                id:3,
-                name : "Arjun",
-                favoriteMovies :[ MovieID]
+                {<br>
+                "_id": "65931739173b8df040430de4",<br>
+                "Username": "User6",<br>
+                "Password": "pwd6",<br>
+                "Email": "User6@gmail.com",<br>
+                "Birthday": "1991-06-21T00:00:00.000Z",<br>
+                "FavoriteMovies": [
+                "658b2bddc0a6d242cf1e2089"
+                ],<br>
+                "__v": 0
                 }
             </td>
         </tr>
@@ -147,18 +176,29 @@
             <td>A JSON object holding
                 data about the user
                 favoritemMovie list, structured like:
-                {
-                id:3,
-                name : "Arjun",
-                favoriteMovies :[MovieID]
+                {<br>
+                "_id": "65931739173b8df040430de4",<br>
+                "Username": "User6",<br>
+                "Password": "pwd6",<br>
+                "Email": "User6@gmail.com",<br>
+                "Birthday": "1991-06-21T00:00:00.000Z",<br>
+                "FavoriteMovies": [
+                "658b2bddc0a6d242cf1e2089"
+                ],<br>
+                "__v": 0
                 }</td>
             <td>A JSON object holding data
                 about the user that was movie
                 deleted from favoriteMovies list :
-                {
-                id:3,
-                name : "Arjun",
-                favoriteMovies :[]
+
+                {<br>
+                "_id": "65931739173b8df040430de4",<br>
+                "Username": "User6",<br>
+                "Password": "pwd6",<br>
+                "Email": "User6@gmail.com",<br>
+                "Birthday": "1991-06-21T00:00:00.000Z",<br>
+                "FavoriteMovies": [],<br>
+                "__v": 0
                 }
             </td>
         </tr>
@@ -169,16 +209,22 @@
             <td>DELETE</td>
             <td>A JSON object holding
                 data about the user, structured like:
-                {
-                id:3,
-                name : "Arjun",
-                favoriteMovies :[MovieID]
+
+                {<br>
+                "_id": "65931739173b8df040430de4",<br>
+                "Username": "User6",<br>
+                "Password": "pwd6",<br>
+                "Email": "User6@gmail.com",<br>
+                "Birthday": "1991-06-21T00:00:00.000Z",<br>
+                "FavoriteMovies": [],<br>
+                "__v": 0
                 }</td>
             <td>A JSON object holding data
                 about the userlist after removing/delete user
-                {
-                text message user was deleted/if user was not exsisted message displayed like user was not found
-                }
+                text message
+                <br> "User6 was deleted."<br>
+                /if user was not exsisted message displayed like user was not found
+
             </td>
         </tr>
 
