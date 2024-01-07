@@ -15,8 +15,10 @@ const { check, validationResult } = require('express-validator');
 const Movies = Models.Movie;
 const Users = Models.User;
 
+//mongodb connect using mongoose
+// mongoose.connect('mongodb://localhost:27017/movies', { useNewUrlParser: true, useUnifiedTopology: true });
 
-mongoose.connect('mongodb://localhost:27017/movies', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 const app = express();
@@ -63,6 +65,7 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), { 
 
 // setup the logger
 app.use(morgan('combined', { stream: accessLogStream }));
+
 
 app.get('/', (req, res) => {
   res.send('Welcome to myMovie app!');
@@ -273,3 +276,5 @@ app.listen(port, '0.0.0.0', () => {
 });
 
 
+// MongoDB connection error handling
+mongoose.connection.on("error", console.error.bind(console, "MongoDB connection error:"));
