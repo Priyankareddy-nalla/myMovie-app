@@ -327,3 +327,7 @@ Timestamp: Wed Dec 06 2023 21:58:27 GMT+0100 (Central European Standard Time)
 ::1 - - [04/Jan/2024:19:58:14 +0000] "GET /movies/genres/Comedy HTTP/1.1" 200 1372 "-" "PostmanRuntime/7.36.0"
 ::1 - - [04/Jan/2024:19:58:40 +0000] "GET /movies/dircetors/Anil%20Ravipudi HTTP/1.1" 404 171 "-" "PostmanRuntime/7.36.0"
 ::1 - - [04/Jan/2024:19:58:50 +0000] "GET /movies/directors/Anil%20Ravipudi HTTP/1.1" 200 1372 "-" "PostmanRuntime/7.36.0"
+127.0.0.1 - - [07/Jan/2024:22:56:38 +0000] "GET /movies HTTP/1.1" 201 8120 "-" "PostmanRuntime/7.36.0"
+127.0.0.1 - - [10/Jan/2024:20:53:34 +0000] "GET /movies HTTP/1.1" 401 - "-" "PostmanRuntime/7.36.0"
+127.0.0.1 - - [10/Jan/2024:20:53:59 +0000] "GET /users HTTP/1.1" 201 1073 "-" "PostmanRuntime/7.36.0"
+127.0.0.1 - - [10/Jan/2024:20:55:55 +0000] "GET /users HTTP/1.1" 201 1073 "-" "PostmanRuntime/7.36.0"
