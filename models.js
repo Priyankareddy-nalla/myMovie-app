@@ -29,7 +29,7 @@ let userSchema = mongoose.Schema(
 );
 
 //method for encripted password
-userSchema.statics.hasPassword = (Password) => {
+userSchema.statics.hashPassword = (Password) => {
     return bcrypt.hashSync(Password, 10);
 };
 

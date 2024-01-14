@@ -331,3 +331,4 @@ Timestamp: Wed Dec 06 2023 21:58:27 GMT+0100 (Central European Standard Time)
 127.0.0.1 - - [10/Jan/2024:20:53:34 +0000] "GET /movies HTTP/1.1" 401 - "-" "PostmanRuntime/7.36.0"
 127.0.0.1 - - [10/Jan/2024:20:53:59 +0000] "GET /users HTTP/1.1" 201 1073 "-" "PostmanRuntime/7.36.0"
 127.0.0.1 - - [10/Jan/2024:20:55:55 +0000] "GET /users HTTP/1.1" 201 1073 "-" "PostmanRuntime/7.36.0"
+127.0.0.1 - - [11/Jan/2024:21:52:18 +0000] "GET /users HTTP/1.1" 201 1073 "-" "PostmanRuntime/7.36.0"
