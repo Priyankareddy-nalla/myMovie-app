@@ -274,3 +274,4 @@ app.listen(port, '0.0.0.0', () => {
 });
 
 
+mongoose.connection.on("error", console.error.bind(console, "MongoDB connection error:"));
