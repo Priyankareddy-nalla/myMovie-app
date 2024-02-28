@@ -28,20 +28,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //CORS in Express
-app.use(cors());
+// app.use(cors());
 //allowing particular origins
-// let allowedOrigins = ['http://localhost:8080', 'http://testsite.com','http://localhost:1234'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com','http://localhost:1234'];
 
-// app.use(cors({
-//   origin: (origin, callback) => {
-//     if (!origin) return callback(null, true);
-//     if (allowedOrigins.indexOf(origin) === -1) {
-//       let message = 'The CORS policy for this application doesnt allow access from origin ' + origin;
-//       return callback(new Error(message), false);
-//     }
-//     return callback(null, true);
-//   }
-// }));
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      let message = 'The CORS policy for this application doesnt allow access from origin ' + origin;
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 
 //here importing auth.js and passport.js
@@ -218,31 +218,6 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }),
         res.status(500).send('Error: ' + err);
       })
   });
-// //update user info  using mongoose
-// app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
-//   //condition to check added here
-//   if (req.user.Username !== req.params.Username) {
-//     return res.status(400).send('Permission denied');
-//   }
-//   await Users.findOneAndUpdate({ Username: req.params.Username }, {
-//     $set:
-//     {
-//       Username: req.body.Username,
-//       Password: req.body.Password,
-//       Email: req.body.Email,
-//       Birthday: req.body.Birthday
-//     }
-//   },
-//     { new: true }) // This line makes sure that the updated document is returned
-//     .then((updatedUser) => {
-//       res.json(updatedUser);
-//     })
-//     .catch((err) => {
-//       console.error(err);
-//       res.status(500).send('Error: ' + err);
-//     })
-
-// });
 
 
 /**
@@ -335,7 +310,7 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
  * @throws {Error} - If there is an error while retrieving movies from the database.
  * @returns {Object} - Returns JSON response containing all movies.
  */
-app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.get('/movies', async (req, res) => {
   await Movies.find()
     .then((movies) => {
       res.status(201).json(movies);
