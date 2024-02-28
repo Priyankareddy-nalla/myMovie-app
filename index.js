@@ -354,7 +354,7 @@ app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req
  * @throws {Error} - If there is an error while retrieving genre from the database.
  * @returns {Object} - Returns JSON response containing the genre object of the requested movies.
  */
-app.get('/movies/genres/:genreName', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.get('/movies/genres/:genreName', async (req, res) => {
   await Movies.find({ "Genre.Name": req.params.genreName })
     .then((movies) => {
       res.json(movies);
@@ -377,7 +377,7 @@ app.get('/movies/genres/:genreName', passport.authenticate('jwt', { session: fal
  * @throws {Error} - If there is an error while retrieving director from the database.
  * @returns {Object} - Returns JSON response containing the director object of the requested movies.
  */
-app.get('/movies/directors/:directorName', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.get('/movies/directors/:directorName', async (req, res) => {
   await Movies.find({ "Director.Name": req.params.directorName })
     .then((movies) => {
       res.json(movies);
