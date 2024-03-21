@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 //CORS in Express
 // app.use(cors());
 //allowing particular origins
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com','http://localhost:1234'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com','http://localhost:1234','https://myfirstappmovie.netlify.app'];
 
 app.use(cors({
   origin: (origin, callback) => {
