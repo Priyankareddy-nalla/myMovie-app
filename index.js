@@ -13,6 +13,8 @@ const { check, validationResult } = require('express-validator');
 
 const app = express();
 const cors = require('cors');
+//CORS in Express
+app.use(cors());
 
 const Movies = Models.Movie;
 const Users = Models.User;
@@ -27,8 +29,6 @@ mongoose.connect(process.env.CONNECTION_URI);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//CORS in Express
-app.use(cors());
 //allowing particular origins
 // let allowedOrigins = ['http://localhost:8080', 'http://testsite.com','http://localhost:1234','https://myfirstappmovie.netlify.app','http://localhost:4200'];
 
