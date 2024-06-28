@@ -30,7 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //allowing particular origins
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com','http://localhost:1234','https://myfirstappmovie.netlify.app','http://localhost:4200'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://myfirstappmovie.netlify.app', 'http://localhost:4200'];
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -354,32 +354,19 @@ app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req
  * @throws {Error} - If there is an error while retrieving genre from the database.
  * @returns {Object} - Returns JSON response containing the genre object of the requested movies.
  */
-// app.get('/movies/genres/:genreName', passport.authenticate('jwt', { session: false }), async (req, res) => {
-//   await Movies.find({ "Genre.Name": req.params.genreName })
-//     .then((movies) => {
-//       res.json(movies);
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       res.status(500).send('Error:' + err);
-//     });
-// });
-
-
-
-app.get('/movies/genre/:genreName', passport.authenticate('jwt', {session: false}), async (req, res) => {
+app.get('/movies/genre/:genreName', passport.authenticate('jwt', { session: false }), async (req, res) => {
   try {
-      const genreName = req.params.genreName;
-      const movie = await Movies.findOne({ 'Genre.Name': genreName });
+    const genreName = req.params.genreName;
+    const movie = await Movies.findOne({ 'Genre.Name': genreName });
 
-      if (movie) {
-          res.status(200).json(movie.Genre);
-      } else {
-          res.status(404).send('No such genre found');
-      }
+    if (movie) {
+      res.status(200).json(movie.Genre);
+    } else {
+      res.status(404).send('No such genre found');
+    }
   } catch (err) {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
+    console.error(err);
+    res.status(500).send('Error: ' + err);
   }
 });
 
@@ -394,14 +381,19 @@ app.get('/movies/genre/:genreName', passport.authenticate('jwt', {session: false
  * @returns {Object} - Returns JSON response containing the director object of the requested movies.
  */
 app.get('/movies/directors/:directorName', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  await Movies.find({ "Director.Name": req.params.directorName })
-    .then((movies) => {
-      res.json(movies);
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).send(error);
-    });
+  try {
+    const directorName = req.params.directorName;
+    const movie = await Movies.findOne({ 'Director.Name': directorName });
+
+    if (movie) {
+      res.status(200).json(movie.Director);
+    } else {
+      res.status(404).send('No such director found');
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  }
 });
 
 const port = process.env.PORT || 8080;
