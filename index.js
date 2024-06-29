@@ -48,6 +48,7 @@ app.use(cors({
 let auth = require('./auth.js')(app);
 
 const passport = require('passport');
+const { error } = require('console');
 require('./passport');
 
 
@@ -395,6 +396,18 @@ app.get('/movies/directors/:directorName', passport.authenticate('jwt', { sessio
     res.status(500).send('Error: ' + err);
   }
 });
+
+// getFavoriteMovies of user
+app.get('/users/:Username/:FavoriteMovies', async (req, res) => {
+  await Users.find({ FavoriteMovies: req.params.FavoriteMovies })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error:' + error);
+    })
+})
 
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
