@@ -397,11 +397,12 @@ app.get('/movies/directors/:directorName', passport.authenticate('jwt', { sessio
   }
 });
 
-// getFavoriteMovies of user
+
+// getFavMovies 
 app.get('/users/:Username/:FavoriteMovies', async (req, res) => {
   try {
-    const favoriteMovieId = mongoose.Types.ObjectId(req.params.FavoriteMovies);
-    const users = await Users.find({ FavoriteMovies: { $elemMatch: { $eq: favoriteMovieId } } });
+    const favoriteMovieId = new mongoose.Types.ObjectId(req.params.FavoriteMovies);
+    const users = await Users.find({ FavoriteMovies: favoriteMovieId });
     res.json(users);
   } catch (error) {
     console.error(error);
