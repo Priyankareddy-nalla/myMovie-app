@@ -399,16 +399,16 @@ app.get('/movies/directors/:directorName', passport.authenticate('jwt', { sessio
 
 // getFavoriteMovies of user
 app.get('/users/:Username/:FavoriteMovies', async (req, res) => {
-  await Users.find({ FavoriteMovies: req.params.FavoriteMovies })
-    .then((user) => {
-      res.json(user);
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send('Error:' + error);
-    })
-})
-
+  try {
+    const favoriteMovieId = mongoose.Types.ObjectId(req.params.FavoriteMovies);
+    const users = await Users.find({ FavoriteMovies: { $elemMatch: { $eq: favoriteMovieId } } });
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error: ' + error);
+  }
+});
+Ex
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0', () => {
   console.log('Listening on Port ' + port);
