@@ -398,11 +398,20 @@ app.get('/movies/directors/:directorName', passport.authenticate('jwt', { sessio
 });
 
 
-// getFavMovies 
+
 app.get('/users/:Username/:FavoriteMovies', async (req, res) => {
   try {
-    const favoriteMovieId = new mongoose.Types.ObjectId(req.params.FavoriteMovies);
-    const users = await Users.find({ FavoriteMovies: favoriteMovieId });
+    const favoriteMovieId = req.params.FavoriteMovies;
+
+    // Validate the ObjectId
+    if (!mongoose.Types.ObjectId.isValid(favoriteMovieId)) {
+      return res.status(400).send('Invalid movie ID format.');
+    }
+
+    // Convert to ObjectId
+    const movieObjectId = new mongoose.Types.ObjectId(favoriteMovieId);
+
+    const users = await Users.find({ FavoriteMovies: movieObjectId });
     res.json(users);
   } catch (error) {
     console.error(error);
