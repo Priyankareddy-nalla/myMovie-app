@@ -8,6 +8,8 @@ const express = require('express'),
   path = require('path');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
+require('dotenv').config(); // For local development
+
 
 const { check, validationResult } = require('express-validator');
 
@@ -20,11 +22,9 @@ const Movies = Models.Movie;
 const Users = Models.User;
 
 //mongodb connect using mongoose
-//mongoose.connect('mongodb://localhost:27017/movies', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect('mongodb://localhost:27017/movieDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 mongoose.connect(process.env.CONNECTION_URI);
-
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -63,6 +63,82 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), { 
 
 // setup the logger
 app.use(morgan('combined', { stream: accessLogStream }));
+
+
+
+
+// Import AWS SDK and Multer
+const AWS = require('aws-sdk');
+const multer = require('multer');
+
+// configure AWS SDK
+AWS.config.update({ region: process.env.AWS_REGION });
+const S3 = new AWS.S3();
+
+// Configure multer for handling file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+// API enpoint to upload an image
+app.post('/upload-image', upload.single('image'), async (req, res) => {
+  const file = req.file;
+
+  if (!file) {
+    console.log(`No file uploaded: index.js upload image endpoint`);
+    return res.status(400).send('No file uploaded.');
+  }
+
+  // Define S3 parameters
+  const params = {
+    Bucket: process.env.S3_BUCKET_NAME,
+    Key: `original-images/${file.originalname}`,
+    Body: file.buffer,
+    ContentType: file.mimetype
+  };
+
+  try {
+    // Upload image to S3
+    console.log("S3 Bucket Name: ", process.env.S3_BUCKET_NAME);
+    const data = await S3.upload(params).promise();
+    console.log(`File uploaded successfully. ${data.Location}`);
+    res.status(200).send({ message: 'File uploaded successfully', location: data.Location });
+  } catch (error) {
+    console.error(`Error uploading fileE1: ${error.message}`, error);
+    res.status(500).send(`Error uploading fileE2: ${error.message}`);
+  }
+});
+
+// API endpoint to list all images in the S3 bucket
+app.get('/list-images', async (req, res) => {
+  try {
+    const bucketName = process.env.S3_BUCKET_NAME;
+
+    // Function to list objects in a given folder
+    const listObjects = async (prefix) => {
+      const params = {
+        Bucket: bucketName,
+        Prefix: prefix // Folder path
+      };
+
+      // Use S3 to list objects
+      const data = await S3.listObjectsV2(params).promise();
+      return data.Contents.map(item => `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${item.Key}`);
+    };
+
+    // Get all original and resized images
+    const originalImages = await listObjects('original-images/');
+    const resizedImages = await listObjects('resized-images/');
+
+    // Send the response with both lists
+    res.status(200).send({ originalImages, resizedImages });
+  } catch (error) {
+    console.error('Error listing images:', error);
+    res.status(500).send('Error listing images.');
+  }
+});
+
+
+
 
 /**
  * READ index page
