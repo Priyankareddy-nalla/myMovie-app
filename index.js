@@ -144,7 +144,7 @@ app.use(morgan('combined', { stream: accessLogStream }));
 // want to run my app every 5 miuten in render
 setInterval(() => {
   https.get('https://myflix-app-deh4.onrender.com/');
-}, 300000); 
+}, 300000);
 
 /**
  * READ index page
@@ -478,6 +478,19 @@ app.get('/movies/directors/:directorName', passport.authenticate('jwt', { sessio
     console.error(err);
     res.status(500).send('Error: ' + err);
   }
+});
+
+//Read ActorName
+app.get('/movies/actor/:actorName', async (req, res) => {
+  const actorName = req.params.actorName;
+  let movieList = await Movies.find({ 'Actors': actorName });
+  // console.log(movieList);
+  if (movieList) {
+    res.json(movieList);
+  } else {
+    res.send(`No movies with the name of ${actorName}`)
+  }
+
 });
 
 const port = process.env.PORT || 8080;
