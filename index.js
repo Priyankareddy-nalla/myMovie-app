@@ -23,6 +23,7 @@ app.use(cors());
 
 const Movies = Models.Movie;
 const Users = Models.User;
+const Actors = Models.Actor;
 
 //mongodb connect using mongoose
 // mongoose.connect('mongodb://localhost:27017/movieDB', { useNewUrlParser: true, useUnifiedTopology: true });
@@ -33,7 +34,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //allowing particular origins
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://myfirstappmovie.netlify.app', 'http://localhost:4200','https://priyankareddy-nalla.github.io/myFlix-angular-app/welcome','https://priyankareddy-nalla.github.io/'];
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234', 'https://myfirstappmovie.netlify.app', 'http://localhost:4200', 'https://priyankareddy-nalla.github.io/myFlix-angular-app/welcome', 'https://priyankareddy-nalla.github.io/'];
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -394,16 +395,28 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
  * @throws {Error} - If there is an error while retrieving movies from the database.
  * @returns {Object} - Returns JSON response containing all movies.
  */
+// app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
+//   await Movies.find().populate("actors")
+//     .then((movies) => {
+//       res.status(201).json(movies);
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//       res.status(500).send('Error: ' + err);
+//     });
+// });
+
 app.get('/movies', passport.authenticate('jwt', { session: false }), async (req, res) => {
-  await Movies.find()
-    .then((movies) => {
-      res.status(201).json(movies);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    });
+  try {
+    const movies = await Movies.find().populate("actors");  // changed
+
+    res.status(200).json(movies); // getmovies
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error: ' + err);
+  }
 });
+
 
 
 /**
@@ -491,6 +504,20 @@ app.get('/movies/actor/:actorName', async (req, res) => {
     res.send(`No movies with the name of ${actorName}`)
   }
 
+});
+
+
+
+//actors 
+app.get('/actors', async (req, res) => {
+  await Actors.find()
+    .then((actors) => {
+      res.status(201).json(actors);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 const port = process.env.PORT || 8080;

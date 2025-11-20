@@ -13,6 +13,10 @@ let movieSchema = mongoose.Schema({
         Bio: String,
         Birth: String
     },
+    actors: [
+        { type: mongoose.Schema.Types.ObjectId, ref: "Actor" } // actors list
+    ],
+
     // Actors: [String],
     ImagePath: String,
     Featured: Boolean
@@ -28,6 +32,16 @@ let userSchema = mongoose.Schema(
     }
 );
 
+let actorSchema = mongoose.Schema(
+    {
+        name: { type: String },
+        dob: { type: String },
+        bio: { type: String },
+        image: { type: String }
+
+    }
+)
+
 //method for encripted password
 userSchema.statics.hashPassword = (Password) => {
     return bcrypt.hashSync(Password, 10);
@@ -42,6 +56,8 @@ userSchema.methods.validatePassword = function (password) {
 
 let Movie = mongoose.model('Movie', movieSchema);
 let User = mongoose.model('User', userSchema);
+let Actor = mongoose.model('Actor', actorSchema);
 
 module.exports.Movie = Movie;
 module.exports.User = User;
+module.exports.Actor = Actor;
