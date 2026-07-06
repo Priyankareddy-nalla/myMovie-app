@@ -28,6 +28,10 @@ This project is a REST API built using Node.js and MongoDB. It provides user aut
 - GET /movies
 
 ---
+##  Test Cases
+
+All detailed test cases including steps, expected results, and execution status are documented in the `public/test-cases.md` file.
+
 
 ##  Testing Scope
 
